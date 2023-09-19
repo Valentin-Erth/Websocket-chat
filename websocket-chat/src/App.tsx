@@ -10,20 +10,15 @@ function App() {
         socket.on('init-messages-published', (messages: any) => {
             setMessages(messages)
         })
-                socket.on('new-message-send', (message: any) => {
+        socket.on('new-message-send', (message: any) => {
             setMessages((messages) => [...messages, message])
         })
     }, [])
     const [messages, setMessages] = useState<{
-        message: string,
-        id: string,
-        user: {
-            id: string,
-            name: string
-        }
+        message: string, id: string, user: { id: string, name: string }
     }[]>([])
     const [message, setMessage] = useState('Hello')
-
+    const [name, setName] = useState('Valek')
     return (
         <div className={s.box}>
             <div className={s.content}>
@@ -37,15 +32,24 @@ function App() {
                 })}
             </div>
             <div>
-                <textarea value={message} onChange={(e) => setMessage(e.currentTarget.value)}
-                          style={{color: "black"}}></textarea>
+                <input type="text" style={{color: "black", marginTop:"5px"}} value={name} onChange={(e)=>setName(e.currentTarget.value)}/>
+                <button onClick={() => {
+                    socket.emit("client-name-send", name)
+
+                }} style={{color: "black", padding: "3px", margin:"5px"}}>Send name
+                </button>
             </div>
             <div>
+                <textarea value={message} onChange={(e) => setMessage(e.currentTarget.value)}
+                          style={{color: "black", marginTop:"5px"}}></textarea>
                 <button onClick={() => {
                     socket.emit("client-message-send", message)
                     setMessage("")
-                }} style={{color: "black", padding: "3px"}}>Send
+                }} style={{color: "black", padding: "3px", margin:"5px"}}>Send
                 </button>
+            </div>
+            <div>
+
             </div>
 
         </div>
