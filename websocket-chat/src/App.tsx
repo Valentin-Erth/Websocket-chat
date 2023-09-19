@@ -6,12 +6,11 @@ const socket = io("http://localhost:3009");
 
 function App() {
     useEffect(() => {
-        // получаем мессаджи с бэка
+        // подписываемся, получаем мессаджи с бэка
         socket.on('init-messages-published', (messages: any) => {
             setMessages(messages)
         })
-        // получаем мессаджи с бэка
-        socket.on('new-message-send', (message: any) => {
+                socket.on('new-message-send', (message: any) => {
             setMessages((messages) => [...messages, message])
         })
     }, [])
