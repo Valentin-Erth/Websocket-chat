@@ -14,8 +14,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="TypeScript File" />
         <option value="tsconfig.json" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -40,7 +40,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Development/IT-inkubator/Websocket-chat/websocet-chat-back/public",
+    "last_opened_file_path": "D:/Development/IT-inkubator/Websocket-chat/websocket-chat/src/hooks",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -61,9 +61,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Development\IT-inkubator\Websocket-chat\websocket-chat\src\hooks" />
       <recent name="D:\Development\IT-inkubator\Websocket-chat\websocet-chat-back\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Development\IT-inkubator\Websocket-chat\websocket-chat\src\features\chat" />
+      <recent name="D:\Development\IT-inkubator\Websocket-chat\websocket-chat\src\app" />
+      <recent name="D:\Development\IT-inkubator\Websocket-chat\websocket-chat\src\features\model" />
+      <recent name="D:\Development\IT-inkubator\Websocket-chat\websocket-chat\src\common" />
       <recent name="D:\Development\IT-inkubator\Websocket-chat\websocet-chat-back\src" />
     </key>
   </component>
@@ -114,7 +119,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1695109326361</updated>
-      <workItem from="1695109327427" duration="25697000" />
+      <workItem from="1695109327427" duration="40065000" />
     </task>
     <servers />
   </component>

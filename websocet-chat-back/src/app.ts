@@ -30,7 +30,7 @@ io.on('connection', (socketChanel) => {
     socketChanel.on('disconnect', () => {
         usersState.delete(socketChanel)
     })
-    io.on('client-name-send', (name: string) => {
+    socketChanel.on('client-name-send', (name: string) => {
         if (typeof name !== "string") {
             return
         }
