@@ -22,28 +22,35 @@ const messages = [
     {message: "Hello", id: "23f440", user: {id: "sdgsdgs", name: "Tem"}},
     {message: "Hello Petr Yoyo", id: "23f447", user: {id: "sdgsdgs", name: "Petr"}},
 ]
-const users = new Map()
-io.on('connection', (socket) => {
-    // socket подписался на событие connection, и когда оно произойдет выполняется код ниже, клиентское сообщение и имя отправлено
-    users.set(socket, {id: new Date().getTime().toString(), name: "anon"})
-    socket.on('client-name-send', (name: string) => {
-        const user = users.get(socket)
+const usersState = new Map()
+
+io.on('connection', (socketChanel) => {
+    // socketChanel подписался на событие connection, и когда оно произойдет выполняется код ниже, клиентское сообщение и имя отправлено, сщздаем аноним пользователя
+    usersState.set(socketChanel, {id: new Date().getTime().toString(), name: "anon"})
+    socketChanel.on('disconnect', () => {
+        usersState.delete(socketChanel)
+    })
+    io.on('client-name-send', (name: string) => {
+        if (typeof name !== "string") {
+            return
+        }
+        const user = usersState.get(socketChanel)//присваиваем имя с фронта
         user.name = name
     })
 
-    socket.on('client-message-send', (message: string) => {
+    socketChanel.on('client-message-send', (message: string) => {
         if (typeof message !== "string") {
             return
         }
-        const user = users.get(socket)
+        const user = usersState.get(socketChanel)
         // console.log(message)
-        let messageItem = {message: message, id: new Date().getTime(), user: {id: user.id, name: user.name}}
+        let messageItem = {message: message, id: new Date().getTime().toString(), user: {id: user.id, name: user.name}}
         messages.push(messageItem)
 
-        socket.emit('new-message-send', messageItem)//отправлем это сообщение
+        socketChanel.emit('new-message-send', messageItem)//отправлем это сообщение
     })
 
-    socket.emit('init-messages-published', messages)
+    socketChanel.emit('init-messages-published', messages)
 
     console.log('a user connected');
 });

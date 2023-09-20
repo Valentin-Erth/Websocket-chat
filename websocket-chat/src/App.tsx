@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import s from './app.module.css'
 import {io} from "socket.io-client";
 
@@ -14,11 +14,24 @@ function App() {
             setMessages((messages) => [...messages, message])
         })
     }, [])
+
     const [messages, setMessages] = useState<{
-        message: string, id: string, user: { id: string, name: string }
+        message: string,
+        id: string,
+        user: {
+            id: string,
+            name: string
+        }
     }[]>([])
     const [message, setMessage] = useState('Hello')
     const [name, setName] = useState('Valek')
+
+    useEffect(() => {
+        messagesAncorRef.current?.scrollIntoView({behavior: "smooth"})
+    }, [messages])
+
+    const messagesAncorRef = useRef<HTMLDivElement>(null)
+
     return (
         <div className={s.box}>
             <div className={s.content}>
@@ -30,22 +43,24 @@ function App() {
                         </div>
                     )
                 })}
+                <div ref={messagesAncorRef}></div>
             </div>
             <div>
-                <input type="text" style={{color: "black", marginTop:"5px"}} value={name} onChange={(e)=>setName(e.currentTarget.value)}/>
+                <input type="text" style={{color: "black", marginTop: "5px"}} value={name}
+                       onChange={(e) => setName(e.currentTarget.value)}/>
                 <button onClick={() => {
                     socket.emit("client-name-send", name)
 
-                }} style={{color: "black", padding: "3px", margin:"5px"}}>Send name
+                }} style={{color: "black", padding: "3px", margin: "5px"}}>Send name
                 </button>
             </div>
             <div>
                 <textarea value={message} onChange={(e) => setMessage(e.currentTarget.value)}
-                          style={{color: "black", marginTop:"5px"}}></textarea>
+                          style={{color: "black", marginTop: "5px"}}></textarea>
                 <button onClick={() => {
                     socket.emit("client-message-send", message)
                     setMessage("")
-                }} style={{color: "black", padding: "3px", margin:"5px"}}>Send
+                }} style={{color: "black", padding: "3px", margin: "5px"}}>Send
                 </button>
             </div>
             <div>
