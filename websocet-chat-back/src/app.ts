@@ -10,7 +10,7 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"]
     }
-});//socket
+});//socket создали
 app.use(cors())
 const PORT = process.env.PORT || 3009
 
@@ -37,10 +37,15 @@ io.on('connection', (socketChanel) => {
         const user = usersState.get(socketChanel)//присваиваем имя с фронта
         user.name = name
     })
+    socketChanel.on('client-typed', () => {
+        //сделать рассылку всем кроме себя
+        socketChanel.broadcast.emit('user-is-typing', usersState.get(socketChanel))
+    })
 
-    socketChanel.on('client-message-send', (message: string) => {
-        if (typeof message !== "string") {
-            return
+    socketChanel.on('client-message-send', (message: string, sucsessFn) => {
+        // добавили проверку на длину сообщения, и показать этот error на front
+        if (typeof message !== "string" || message.length>20) {
+            return sucsessFn("Message length should be less than 20")
         }
         const user = usersState.get(socketChanel)
         // console.log(message)
@@ -48,9 +53,12 @@ io.on('connection', (socketChanel) => {
         messages.push(messageItem)
 
         socketChanel.emit('new-message-send', messageItem)//отправлем это сообщение
+        return sucsessFn(null)
     })
 
-    socketChanel.emit('init-messages-published', messages)
+    socketChanel.emit('init-messages-published', messages, (data:string)=>{
+        console.log("Init messages received"+ data)
+    })
 
     console.log('a user connected');
 });

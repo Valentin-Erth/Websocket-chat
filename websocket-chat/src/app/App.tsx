@@ -2,13 +2,14 @@ import {useEffect, useRef, useState} from "react";
 import s from './app.module.css'
 import {useAppSelector} from "@/common/hooks/useAppSelector.ts";
 import {useAppDispatch} from "@/common/hooks/useAppDispatch.ts";
-import {selectMessages} from "@/features/chat/model/messages.selector.ts";
+import {selectMessages, selectTypingusers} from "@/features/chat/model/chat.selector.ts";
 import {chatThunks} from "@/features/chat/model/chat.slice.ts";
 
 
 function App() {
-    console.log('App rendered')
+    // console.log('App rendered')
     const messages = useAppSelector(selectMessages)
+    const typingUsers = useAppSelector(selectTypingusers)
     const dispatch = useAppDispatch()
     // подписываемся, получаем мессаджи с бэка
     useEffect(() => {
@@ -59,6 +60,13 @@ function App() {
                         </div>
                     )
                 })}
+                {typingUsers && typingUsers.map((u: any) => {
+                    return (
+                        <div key={u.id}>
+                            <b>{u.user.name}:</b> ...
+                        </div>
+                    )
+                })}
                 <div ref={messagesAncorRef}></div>
             </div>
             <div>
@@ -70,7 +78,9 @@ function App() {
                 </button>
             </div>
             <div>
-                <textarea value={message} onChange={(e) => setMessage(e.currentTarget.value)}
+                <textarea value={message} onKeyDown={()=>{
+                    dispatch(chatThunks.typeMessage())
+                }} onChange={(e) => setMessage(e.currentTarget.value)}
                           style={{color: "black", marginTop: "5px"}}></textarea>
                 <button onClick={() => {
                     dispatch(chatThunks.sendMessage(message))
