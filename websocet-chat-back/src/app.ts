@@ -2,21 +2,22 @@ import express from 'express'
 import http from 'http'
 import {Server} from "socket.io"
 import cors from 'cors'
+import router from "./route";
 
+// const route=require("./route")
 const app = express();
 const server = http.createServer(app);
+app.use(cors({origin: "*"}))
+app.use(router)
+const PORT = process.env.PORT || 3009
+
 const io = new Server(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
     }
-});//socket создали
-app.use(cors())
-const PORT = process.env.PORT || 3009
+})//socket создали
 
-app.get('/', (req, res) => {
-    res.send("Hi, It's Websocket server!")//создали endpoint
-});
 const messages = [
     {message: "Hello Valek", id: "23f441", user: {id: "sdgsdgs", name: "Valek Tem"}},
     {message: "Hello", id: "23f440", user: {id: "sdgsdgs", name: "Tem"}},
@@ -44,7 +45,7 @@ io.on('connection', (socketChanel) => {
 
     socketChanel.on('client-message-send', (message: string, sucsessFn) => {
         // добавили проверку на длину сообщения, и показать этот error на front
-        if (typeof message !== "string" || message.length>20) {
+        if (typeof message !== "string" || message.length > 20) {
             return sucsessFn("Message length should be less than 20")
         }
         const user = usersState.get(socketChanel)
@@ -56,8 +57,8 @@ io.on('connection', (socketChanel) => {
         return sucsessFn(null)
     })
 
-    socketChanel.emit('init-messages-published', messages, (data:string)=>{
-        console.log("Init messages received"+ data)
+    socketChanel.emit('init-messages-published', messages, (data: string) => {
+        console.log("Init messages received" + data)
     })
 
     console.log('a user connected');

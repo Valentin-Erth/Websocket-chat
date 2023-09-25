@@ -3,7 +3,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 }
 
 .content {
@@ -17,5 +16,9 @@
     margin: 30px;
     height: 400px;
     min-width: 800px;
-
+}
+.container {
+    width: 1240px;
+    margin: 0 auto;
+    min-height: 100vh;
 }

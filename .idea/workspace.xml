@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6305a96c-1d15-41f5-bf09-d4fcc16ed908" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/websocet-chat-back/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/websocet-chat-back/src/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,14 +15,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
         <option value="tsconfig.json" />
+        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/websocet-chat-back" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -42,7 +43,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Development/IT-inkubator/Websocket-chat/websocket-chat/src/hooks",
+    "last_opened_file_path": "D:/Development/IT-inkubator/Websocket-chat",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -74,7 +75,7 @@
       <recent name="D:\Development\IT-inkubator\Websocket-chat\websocet-chat-back\src" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/websocket-chat/package.json" />
       <command value="run" />
@@ -121,7 +122,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1695109326361</updated>
-      <workItem from="1695109327427" duration="46443000" />
+      <workItem from="1695109327427" duration="51638000" />
+      <workItem from="1695544827031" duration="3368000" />
+      <workItem from="1695621088801" duration="11606000" />
     </task>
     <servers />
   </component>
