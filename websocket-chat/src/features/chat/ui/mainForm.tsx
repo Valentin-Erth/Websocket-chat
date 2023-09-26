@@ -36,7 +36,7 @@ export const MainForm = () => {
                            onChange={handleChange}
                            className={s.input}
                            autoComplete="off"/>
-                    <Link to={`/chat?name=${values.username} & room=${values.room}`}>
+                    <Link to={`/chat?name=${values.username}&room=${values.room}`}>
                         <button disabled={isDisabled} type={"submit"} className={s.button}>
                             Sign In
                         </button>
