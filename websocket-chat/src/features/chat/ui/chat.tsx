@@ -1,5 +1,5 @@
 import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {io} from "socket.io-client";
 
 import s from "./chat.module.css"
@@ -10,14 +10,17 @@ import {Messages} from "@/features/chat/ui/messages.tsx";
 const socket = io("http://localhost:3009");
 export const Chat = () => {
     // console.log('Chat rendered')
+    const navigate=useNavigate()
     const location = useLocation()
-    const [params, setParams] = useState<any>(null)
+    const [params, setParams] = useState<Record<string, string> | null>(null)
+    console.log(params)
     const [isopen, setIsOpen] = useState<boolean>(false)
     const [state, setState] = useState<{
         user: { name: string },
         message: string
     }[]>([])
     const [message, setMessage] = useState("")
+    const [users, setUser]=useState(0)
     useEffect(() => {
         const searchParams = Object.fromEntries(new URLSearchParams(location.search))//перобразуем строку после ?,из параметров запросаиз урла в по ключ-значению в объект
         setParams(searchParams)
@@ -27,12 +30,20 @@ export const Chat = () => {
 
     useEffect(() => {
         socket.on("message", ({data}) => {
-            console.log("data",data)
+            // console.log("data",data)
             setState((prevState) => [...prevState, data])
         })
     }, []);
-    console.log("state", state)
+    useEffect(() => {
+        socket.on("room", ({data}) => {
+            console.log("users",data.users)
+            setUser(data.users.length)
+        })
+    }, []);
+    // console.log("state", state)
     const leftRoom = () => {
+        socket.emit("leftRoom", {params})
+        navigate("/")
     }
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setMessage(e.currentTarget.value)
@@ -53,7 +64,7 @@ export const Chat = () => {
             <div className={s.header}>
                 <div className={s.title}>{params?.room}</div>
                 <div className={s.user}>
-                    0 users in with room
+                    {users} users in with room
                 </div>
                 <button className={s.left} onClick={leftRoom}>
                     Left the room
@@ -61,7 +72,7 @@ export const Chat = () => {
             </div>
 
             <div className={s.messages}>
-                <Messages messages={state} name={params?.name}/>
+                <Messages messages={state} name={params?.name ?? "Default name"}/>
             </div>
             <form className={s.form} onSubmit={handleSubmit}>
                 <input type={"text"}

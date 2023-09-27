@@ -3,7 +3,7 @@ import http from 'http'
 import {Server} from "socket.io"
 import cors from 'cors'
 import router from "./route";
-import {addUser, findUser} from "./users";
+import {addUser, findUser, getRoomsUsers, removeUser} from "./users";
 
 // const route=require("./route")
 const app = express();
@@ -26,19 +26,22 @@ const messages = [
 ]
 const usersState = new Map()
 
-io.on('connection', (socketChanel) => {
-    // socketChanel подписался на событие connection, и когда оно произойдет выполняется код ниже, клиентское сообщение и имя отправлено, создаем аноним пользователя
+io.on('connection', (socketChanel) => {// socketChanel подписался на событие connection, и когда оно произойдет выполняется код ниже, клиентское сообщение и имя отправлено, создаем аноним пользователя
     // usersState.set(socketChanel, {id: new Date().getTime().toString(), name: "anon"})
     socketChanel.on("join", ({name, room}) => {
         socketChanel.join(room)// подписались на событие по комнатам
-        const {user} = addUser({name, room})
-
+        const {user, isExist} = addUser({name, room})
+        console.log(isExist)
+        let userMessage = isExist
+            ? `${user.name}, here you go again`
+            : `Hi hi my name ${user.name}`
         socketChanel.emit("message", {
-            data: {user: {name: "Admin"}, message: `Hi hi my name ${user.name}`}
+            data: {user: {name: "Admin"}, message: userMessage}
         })
         socketChanel.broadcast.to(user.room).emit("message", {
             data: {user: {name: "Admin"}, message: `${user.name} has joined`}
         })
+        io.to(user.room).emit("room", {data: {users: getRoomsUsers(user.room)}})
     })
     socketChanel.on("sendMessage", ({message, params}) => {
         const user = findUser(params)
@@ -47,6 +50,15 @@ io.on('connection', (socketChanel) => {
             io.to(user.room).emit("message", {data: {user, message}})
         }
         console.log("message", message)
+    })
+    socketChanel.on("leftRoom", ({params}) => {
+        const user = removeUser(params)
+        console.log(user)
+        if (user) {
+            io.to(user.room).emit("message", {data: {user: {name:"Admin"}, message: `${user.name} hsa left`}})
+
+            io.to(user.room).emit("room", {data: {users: getRoomsUsers(user.room)}})
+        }
     })
     socketChanel.on('disconnect', () => {
         // usersState.delete(socketChanel)
