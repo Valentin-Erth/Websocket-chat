@@ -1,4 +1,4 @@
-import {ChangeEvent, useEffect, useState} from 'react';
+import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
 import {io} from "socket.io-client";
 
@@ -9,28 +9,26 @@ import {Messages} from "@/features/chat/ui/messages.tsx";
 
 const socket = io("http://localhost:3009");
 export const Chat = () => {
-    // console.log('App rendered')
+    // console.log('Chat rendered')
     const location = useLocation()
     const [params, setParams] = useState<any>(null)
     const [isopen, setIsOpen] = useState<boolean>(false)
     const [state, setState] = useState<{
-        name: string,
-        room: string,
+        user: { name: string },
         message: string
     }[]>([])
     const [message, setMessage] = useState("")
-    console.log(message)
     useEffect(() => {
         const searchParams = Object.fromEntries(new URLSearchParams(location.search))//перобразуем строку после ?,из параметров запросаиз урла в по ключ-значению в объект
         setParams(searchParams)
         socket.emit("join", searchParams)
     }, [location.search])
-    console.log("params", params)
+    // console.log("params", params)
 
     useEffect(() => {
         socket.on("message", ({data}) => {
-            // console.log(data)
-            setState((prevState) => ([...prevState, data]))
+            console.log("data",data)
+            setState((prevState) => [...prevState, data])
         })
     }, []);
     console.log("state", state)
@@ -39,13 +37,16 @@ export const Chat = () => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setMessage(e.currentTarget.value)
     }
-    const onEmodjiClick = (emoji:any) => {
+    const onEmodjiClick = (emoji: any) => {
         console.log(emoji);
-       setMessage(`${message} ${emoji.emoji}`)
+        setMessage(`${message} ${emoji.emoji}`)
     }
 
-    const handleSubmit=()=>{
-
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (!message) return
+        socket.emit("sendMessage", {message, params})
+        setMessage("")
     }
     return (
         <div className={s.wrap}>
@@ -58,11 +59,11 @@ export const Chat = () => {
                     Left the room
                 </button>
             </div>
-            <Messages messages={state} name={params?.name}/>
-            {/*<div className={s.messages}>*/}
-            
-            {/*</div>*/}
-            <form className={s.form}>
+
+            <div className={s.messages}>
+                <Messages messages={state} name={params?.name}/>
+            </div>
+            <form className={s.form} onSubmit={handleSubmit}>
                 <input type={"text"}
                        name="message"
                        placeholder={"What do you want to write?"}
@@ -72,14 +73,16 @@ export const Chat = () => {
                        autoComplete="off"
                        required
                 />
-                <div className={s.emoji}><img onClick={()=>{setIsOpen(!isopen)}} src={icon} alt=""/>
+                <div className={s.emoji}><img onClick={() => {
+                    setIsOpen(!isopen)
+                }} src={icon} alt=""/>
                     {isopen &&
                         <div className={s.emojies}>
                             <EmojiPicker onEmojiClick={onEmodjiClick}/>
                         </div>}
                 </div>
                 <div className={s.button}>
-                    <input type={"submit"} onSubmit={handleSubmit} value={"Send a message"}/>
+                    <input type={"submit"} value={"Send a message"}/>
                 </div>
             </form>
         </div>

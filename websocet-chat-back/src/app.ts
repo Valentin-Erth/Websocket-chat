@@ -3,7 +3,7 @@ import http from 'http'
 import {Server} from "socket.io"
 import cors from 'cors'
 import router from "./route";
-import {addUser} from "./users";
+import {addUser, findUser} from "./users";
 
 // const route=require("./route")
 const app = express();
@@ -29,18 +29,25 @@ const usersState = new Map()
 io.on('connection', (socketChanel) => {
     // socketChanel подписался на событие connection, и когда оно произойдет выполняется код ниже, клиентское сообщение и имя отправлено, создаем аноним пользователя
     // usersState.set(socketChanel, {id: new Date().getTime().toString(), name: "anon"})
-    socketChanel.on("join", ({name,room})=>{
+    socketChanel.on("join", ({name, room}) => {
         socketChanel.join(room)// подписались на событие по комнатам
-        const user=addUser({name,room})
+        const {user} = addUser({name, room})
 
         socketChanel.emit("message", {
-            data: {user: {name: "Admin"}, message: `Hi hi my name ${user.user.name}`}
+            data: {user: {name: "Admin"}, message: `Hi hi my name ${user.name}`}
         })
-        socketChanel.broadcast.to(user.user.room).emit("message",{
-            data: {user: {name: "Admin"}, message: `${user.user.name} has joined`}
+        socketChanel.broadcast.to(user.room).emit("message", {
+            data: {user: {name: "Admin"}, message: `${user.name} has joined`}
         })
     })
-
+    socketChanel.on("sendMessage", ({message, params}) => {
+        const user = findUser(params)
+        console.log(user)
+        if (user) {
+            io.to(user.room).emit("message", {data: {user, message}})
+        }
+        console.log("message", message)
+    })
     socketChanel.on('disconnect', () => {
         // usersState.delete(socketChanel)
         console.log('disconnect')
