@@ -21,6 +21,7 @@ export const Chat = () => {
     }[]>([])
     const [message, setMessage] = useState("")
     const [users, setUser]=useState(0)
+
     useEffect(() => {
         const searchParams = Object.fromEntries(new URLSearchParams(location.search))//перобразуем строку после ?,из параметров запросаиз урла в по ключ-значению в объект
         setParams(searchParams)
@@ -41,7 +42,7 @@ export const Chat = () => {
         })
     }, []);
     // console.log("state", state)
-    const leftRoom = () => {
+      const leftRoom = () => {
         socket.emit("leftRoom", {params})
         navigate("/")
     }

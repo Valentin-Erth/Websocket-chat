@@ -1,4 +1,5 @@
 import s from './messages.module.css'
+import {useEffect, useRef} from "react";
 
 type MessagesType = {
     messages: {
@@ -8,6 +9,10 @@ type MessagesType = {
     name: string
 }
 export const Messages = ({messages, name}: MessagesType) => {
+    useEffect(() => {
+        messagesAncorRef.current?.scrollIntoView({behavior: "smooth"})// плавная прокрутка до последнего элемента через ref
+    }, [messages])
+    const messagesAncorRef = useRef<HTMLDivElement>(null)
     // console.log("messages", messages)
     return (
         <div className={s.messages}>
@@ -22,6 +27,7 @@ export const Messages = ({messages, name}: MessagesType) => {
                         <div className={s.text}>
                             <span>{m.message}</span>
                         </div>
+                        <div ref={messagesAncorRef}></div>
                     </div>
                 )
             })}
